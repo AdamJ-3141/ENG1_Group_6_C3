@@ -6,18 +6,24 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
+import java.util.ArrayList;
+
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class App extends ApplicationAdapter {
     SpriteBatch spriteBatch;
     Building theAccom;
     FitViewport viewport;
+    ArrayList<Building> buildings;
 
     @Override
     public void create() {
+        buildings = new ArrayList<>();
         spriteBatch = new SpriteBatch();
         viewport = new FitViewport(8, 5);
-        theAccom = new Accommodation();
-
+        buildings.add(new Accommodation());
+        buildings.add(new Food());
+        buildings.add(new Lecture());
+        buildings.add(new Library());
     }
 
     @Override
@@ -27,13 +33,17 @@ public class App extends ApplicationAdapter {
 
     @Override
     public void render() {
-        theAccom.input(viewport);
+        for (Building building : buildings) {
+            building.input(viewport);
+        }
         logic();
         draw();
     }
 
     public void logic() {
-        theAccom.logic(viewport);
+        for (Building building : buildings) {
+            building.logic(viewport);
+        }
     }
 
     private void draw() {
@@ -42,7 +52,9 @@ public class App extends ApplicationAdapter {
         spriteBatch.setProjectionMatrix(viewport.getCamera().combined);
         spriteBatch.begin();
 
-        theAccom.draw(spriteBatch);
+        for (Building building : buildings) {
+            building.draw(spriteBatch);
+        }
 
         spriteBatch.end();
     }

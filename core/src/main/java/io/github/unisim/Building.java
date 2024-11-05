@@ -12,6 +12,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 public class Building {
     Sprite buildingSprite;
     boolean moving;
+    boolean moved;
     Rectangle bucketRectangle;
 
     public Building(Texture theTexture) {
@@ -36,7 +37,15 @@ public class Building {
             viewport.unproject(touchPos); //converts to in-game units
 
             if (bucketRectangle.contains(touchPos.x, touchPos.y)) {
-                moving = !moving;
+                if (!moving && !moved) {
+                    moving = true;
+                }
+                else if (moving) {
+                    if (validLocation()) {
+                        moved = true;
+                        moving = false;
+                    }
+                }
             }
         }
     }
@@ -60,5 +69,9 @@ public class Building {
 
         buildingSprite.setX(MathUtils.clamp(buildingSprite.getX(), 0, worldWidth - bucketWidth));
         buildingSprite.setY(MathUtils.clamp(buildingSprite.getY(), 0, worldHeight - bucketHeight));
+    }
+
+    public boolean validLocation() {
+        return true;
     }
 }
