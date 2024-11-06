@@ -1,5 +1,6 @@
 package io.github.unisim;
 
+
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -15,8 +16,17 @@ public class App extends ApplicationAdapter {
     FitViewport viewport;
     ArrayList<Building> buildings;
 
+import com.badlogic.gdx.Game;
+
+
+/**
+ * {@link com.badlogic.gdx.ApplicationListener} implementation shared by all
+ * platforms.
+ */
+public class App extends Game {
     @Override
     public void create() {
+// start changes
         buildings = new ArrayList<>();
         spriteBatch = new SpriteBatch();
         viewport = new FitViewport(8, 5);
@@ -57,5 +67,18 @@ public class App extends ApplicationAdapter {
         }
 
         spriteBatch.end();
+// end changes
+        this.setScreen(new GameScreen(this));
     }
+
+    @Override
+    public void render() {
+        super.render();
+    }
+
+    @Override
+    public void dispose() {
+
+    }
+
 }
