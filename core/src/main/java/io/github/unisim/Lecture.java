@@ -6,6 +6,5 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 public class Lecture extends Building {
     public Lecture(FitViewport viewport) {
         super(new Texture("lecture.png"), viewport);
-        buildingSprite.setCenter(1,2);
     }
 }

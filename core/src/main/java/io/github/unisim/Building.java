@@ -1,7 +1,6 @@
 package io.github.unisim;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -14,7 +13,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 public class Building {
     Sprite buildingSprite;
     boolean moving;
-    Rectangle bucketRectangle;
+    Rectangle buildingRectangle;
     FitViewport viewport;
     Texture buildingTexture;
     Texture construction1;
@@ -33,7 +32,7 @@ public class Building {
         construction4 = theTexture;
         buildingSprite = new Sprite(buildingTexture);
         buildingSprite.setSize(1, 1);
-        bucketRectangle = new Rectangle();
+        buildingRectangle = new Rectangle();
         moving = true; // starts the building as being able to move
         timeElapsed = 0;
         constructionTime = 4; // determines how many seconds it takes to finish construction of a building
@@ -54,15 +53,15 @@ public class Building {
         if (moving) {
             if (Gdx.input.justTouched()) { //makes one event per mouse touch
                 // creates up-to-date rectangle
-                float bucketWidth = buildingSprite.getWidth();
-                float bucketHeight = buildingSprite.getHeight();
-                bucketRectangle.set(buildingSprite.getX(), buildingSprite.getY(), bucketWidth, bucketHeight);
+                float buildingWidth = buildingSprite.getWidth();
+                float buildingHeight = buildingSprite.getHeight();
+                buildingRectangle.set(buildingSprite.getX(), buildingSprite.getY(), buildingWidth, buildingHeight);
 
                 Vector2 touchPos = new Vector2();
                 touchPos.set(Gdx.input.getX(), Gdx.input.getY());
                 viewport.unproject(touchPos); //converts mouse location to in-game units
 
-                if (bucketRectangle.contains(touchPos.x, touchPos.y)) {
+                if (buildingRectangle.contains(touchPos.x, touchPos.y)) {
                     if (validLocation()) { // building is placed
                         moving = false;
                         buildingSprite.setColor(Color.WHITE);
@@ -80,13 +79,13 @@ public class Building {
             if (!(timeElapsed > constructionTime + 1)) {
                 timeElapsed += Gdx.graphics.getDeltaTime();
                 if (Math.floor(timeElapsed) == 0) {
-                    buildingSprite.setTexture(buildingTexture); // start of construction
+                    buildingSprite.setTexture(construction1); // start of construction
                 } else if (Math.floor(timeElapsed) == constructionTime * 0.25) {
-                    buildingSprite.setTexture(buildingTexture); // 1/4
+                    buildingSprite.setTexture(construction2); // 1/4
                 } else if (Math.floor(timeElapsed) == constructionTime * 0.5) {
-                    buildingSprite.setTexture(buildingTexture); // 2/4
+                    buildingSprite.setTexture(construction3); // 2/4
                 } else if (Math.floor(timeElapsed) == constructionTime * 0.75) {
-                    buildingSprite.setTexture(buildingTexture); // 3/4
+                    buildingSprite.setTexture(construction4); // 3/4
                 } else {
                     buildingSprite.setTexture(buildingTexture); // restore to normal texture once built
                 }
@@ -103,12 +102,12 @@ public class Building {
 
         float worldWidth = viewport.getWorldWidth();
         float worldHeight = viewport.getWorldHeight();
-        float bucketWidth = buildingSprite.getWidth();
-        float bucketHeight = buildingSprite.getHeight();
+        float buildingWidth = buildingSprite.getWidth();
+        float buildingHeight = buildingSprite.getHeight();
 
         // ensures no escaping sprites
-        buildingSprite.setX(MathUtils.clamp(buildingSprite.getX(), 0, worldWidth - bucketWidth));
-        buildingSprite.setY(MathUtils.clamp(buildingSprite.getY(), 0, worldHeight - bucketHeight));
+        buildingSprite.setX(MathUtils.clamp(buildingSprite.getX(), 0, worldWidth - buildingWidth));
+        buildingSprite.setY(MathUtils.clamp(buildingSprite.getY(), 0, worldHeight - buildingHeight));
     }
 
     public boolean validLocation() {
