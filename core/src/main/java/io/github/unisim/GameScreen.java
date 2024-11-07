@@ -50,7 +50,7 @@ public class GameScreen implements Screen {
 
         buildings = new ArrayList<>();
 
-        buildings.add(new Library(viewport));
+        buildings.add(new Library(viewport)); // for testing purposes
     }
 
     @Override
@@ -59,15 +59,15 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        for (Building building : buildings) {
-            building.input();
-        }
         input();
         logic();
         draw();
     }
 
     private void input() {
+        for (Building building : buildings) {
+            building.input();
+        }
     }
 
     private void logic() {
@@ -83,7 +83,7 @@ public class GameScreen implements Screen {
         tiledMapRenderer.render();
 
         viewport.apply();
-        spriteBatch.setProjectionMatrix(camera.combined);
+        spriteBatch.setProjectionMatrix(camera.combined); // magic dont remove
         spriteBatch.begin();
         for (Building building : buildings) {
             building.draw(spriteBatch);
