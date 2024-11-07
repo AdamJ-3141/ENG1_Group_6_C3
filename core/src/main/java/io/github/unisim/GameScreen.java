@@ -23,8 +23,6 @@ public class GameScreen implements Screen {
     // may want to move this out of this screen and into game in future
     public SpriteBatch spriteBatch;
     FitViewport viewport;
-
-
     ArrayList<Building> buildings;
 
     final float WORLD_WIDTH;
@@ -46,7 +44,7 @@ public class GameScreen implements Screen {
         camera = new OrthographicCamera();
         camera.setToOrtho(false, WORLD_WIDTH, WORLD_HEIGHT);
         camera.update();
-        viewport = new FitViewport(16, 16, camera);
+        viewport = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
 
         buildings = new ArrayList<>();
 
