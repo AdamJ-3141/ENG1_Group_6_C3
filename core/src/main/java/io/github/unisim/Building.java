@@ -16,13 +16,27 @@ public class Building {
     boolean moving;
     Rectangle bucketRectangle;
     FitViewport viewport;
+    Texture buildingTexture;
+    Texture construction1;
+    Texture construction2;
+    Texture construction3;
+    Texture construction4;
+    float timeElapsed;
+    final float constructionTime;
 
     public Building(Texture theTexture, FitViewport viewport) {
         this.viewport = viewport; // viewport stored by reference
-        buildingSprite = new Sprite(theTexture);
+        buildingTexture = theTexture;
+        construction1 = theTexture; // to be replaced with correct textures
+        construction2 = theTexture;
+        construction3 = theTexture;
+        construction4 = theTexture;
+        buildingSprite = new Sprite(buildingTexture);
         buildingSprite.setSize(1, 1);
         bucketRectangle = new Rectangle();
         moving = true; // starts the building as being able to move
+        timeElapsed = 0;
+        constructionTime = 4; // determines how many seconds it takes to finish construction of a building
     }
 
     public void draw(SpriteBatch spriteBatch) {
@@ -61,6 +75,22 @@ public class Building {
     public void logic() {
         if (moving) {
             follow();
+        }
+        else {
+            if (!(timeElapsed > constructionTime + 1)) {
+                timeElapsed += Gdx.graphics.getDeltaTime();
+                if (Math.floor(timeElapsed) == 0) {
+                    buildingSprite.setTexture(buildingTexture); // start of construction
+                } else if (Math.floor(timeElapsed) == constructionTime * 0.25) {
+                    buildingSprite.setTexture(buildingTexture); // 1/4
+                } else if (Math.floor(timeElapsed) == constructionTime * 0.5) {
+                    buildingSprite.setTexture(buildingTexture); // 2/4
+                } else if (Math.floor(timeElapsed) == constructionTime * 0.75) {
+                    buildingSprite.setTexture(buildingTexture); // 3/4
+                } else {
+                    buildingSprite.setTexture(buildingTexture); // restore to normal texture once built
+                }
+            }
         }
     }
 
