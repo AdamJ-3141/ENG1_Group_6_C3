@@ -1,6 +1,8 @@
 package io.github.unisim;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -12,51 +14,56 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 public class Building {
     Sprite buildingSprite;
     boolean moving;
-    boolean moved;
     Rectangle bucketRectangle;
+    FitViewport viewport;
 
-    public Building(Texture theTexture) {
+    public Building(Texture theTexture, FitViewport viewport) {
+        this.viewport = viewport;
         buildingSprite = new Sprite(theTexture);
         buildingSprite.setSize(1, 1);
         bucketRectangle = new Rectangle();
-        moving = false;
+        moving = true;
     }
 
     public void draw(SpriteBatch spriteBatch) {
+        if (moving) {
+            if (!validLocation()) {
+                buildingSprite.setColor(1, 0.5f, 0.5f, 1);
+            } else {
+                buildingSprite.setColor(Color.WHITE);
+            }
+        }
         buildingSprite.draw(spriteBatch);
     }
 
-    public void input(FitViewport viewport) {
-        if (Gdx.input.justTouched()) { //makes one event per mouse touch
-            float bucketWidth = buildingSprite.getWidth();
-            float bucketHeight = buildingSprite.getHeight();
-            bucketRectangle.set(buildingSprite.getX(), buildingSprite.getY(), bucketWidth, bucketHeight);
+    public void input() {
+        if (moving) {
+            if (Gdx.input.justTouched()) { //makes one event per mouse touch
+                float bucketWidth = buildingSprite.getWidth();
+                float bucketHeight = buildingSprite.getHeight();
+                bucketRectangle.set(buildingSprite.getX(), buildingSprite.getY(), bucketWidth, bucketHeight);
 
-            Vector2 touchPos = new Vector2();
-            touchPos.set(Gdx.input.getX(), Gdx.input.getY());
-            viewport.unproject(touchPos); //converts to in-game units
+                Vector2 touchPos = new Vector2();
+                touchPos.set(Gdx.input.getX(), Gdx.input.getY());
+                viewport.unproject(touchPos); //converts to in-game units
 
-            if (bucketRectangle.contains(touchPos.x, touchPos.y)) {
-                if (!moving && !moved) {
-                    moving = true;
-                }
-                else if (moving) {
+                if (bucketRectangle.contains(touchPos.x, touchPos.y)) {
                     if (validLocation()) {
-                        moved = true;
                         moving = false;
+                        buildingSprite.setColor(Color.WHITE);
                     }
                 }
             }
         }
     }
 
-    public void logic(FitViewport viewport) {
+    public void logic() {
         if (moving) {
-            follow(viewport);
+            follow();
         }
     }
 
-    public void follow(FitViewport viewport) {
+    public void follow() {
         Vector2 touchPos = new Vector2();
         touchPos.set(Gdx.input.getX(), Gdx.input.getY());
         viewport.unproject(touchPos); //converts to in-game units
@@ -72,6 +79,7 @@ public class Building {
     }
 
     public boolean validLocation() {
+        //needs logic to determine if location is valid place for building
         return true;
     }
 }

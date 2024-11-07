@@ -22,6 +22,7 @@ public class GameScreen implements Screen {
     public OrthographicCamera camera;
     // may want to move this out of this screen and into game in future
     public SpriteBatch spriteBatch;
+    FitViewport viewport;
 
 
     ArrayList<Building> buildings;
@@ -31,13 +32,6 @@ public class GameScreen implements Screen {
 
     public GameScreen(final App game) {
         this.game = game;
-
-        buildings = new ArrayList<>();
-
-        buildings.add(new Accommodation());
-        buildings.add(new Food());
-        buildings.add(new Lecture());
-        buildings.add(new Library());
 
         spriteBatch = new SpriteBatch();
 
@@ -52,6 +46,11 @@ public class GameScreen implements Screen {
         camera = new OrthographicCamera();
         camera.setToOrtho(false, WORLD_WIDTH, WORLD_HEIGHT);
         camera.update();
+        viewport = new FitViewport(16, 16, camera);
+
+        buildings = new ArrayList<>();
+
+        buildings.add(new Library(viewport));
     }
 
     @Override
@@ -60,9 +59,9 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        /*for (Building building : buildings) {
-            building.input(viewport);
-        }*/
+        for (Building building : buildings) {
+            building.input();
+        }
         input();
         logic();
         draw();
@@ -72,31 +71,30 @@ public class GameScreen implements Screen {
     }
 
     private void logic() {
-        /*for (Building building : buildings) {
-            building.logic(camera);
-        }*/
+        for (Building building : buildings) {
+            building.logic();
+        }
     }
 
     private void draw() {
         ScreenUtils.clear(Color.BLACK);
+        camera.update();
+        tiledMapRenderer.setView(camera);
+        tiledMapRenderer.render();
 
-        //spriteBatch.setProjectionMatrix();
-
+        viewport.apply();
+        spriteBatch.setProjectionMatrix(camera.combined);
         spriteBatch.begin();
         for (Building building : buildings) {
             building.draw(spriteBatch);
         }
         spriteBatch.end();
-
-        camera.update();
-        tiledMapRenderer.setView(camera);
-        tiledMapRenderer.render();
-
     }
 
     @Override
     public void resize(int width, int height) {
         camera.update();
+        viewport.update(width, height, true);
     }
 
     @Override
