@@ -47,7 +47,7 @@ public class GameScreen implements Screen {
 
         buildings = new ArrayList<>();
 
-        buildings.add(new Library(viewport)); // for testing purposes
+        buildings.add(new Library(viewport, tiledMap)); // for testing purposes
     }
 
     @Override

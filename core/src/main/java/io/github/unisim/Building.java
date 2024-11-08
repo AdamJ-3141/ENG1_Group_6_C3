@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -15,6 +17,7 @@ abstract class Building {
     boolean moving;
     Rectangle buildingRectangle;
     FitViewport viewport;
+    TiledMap tiledMap;
     Texture buildingTexture;
     Texture construction1;
     Texture construction2;
@@ -23,8 +26,9 @@ abstract class Building {
     float timeElapsed;
     final float constructionTime;
 
-    public Building(Texture theTexture, FitViewport viewport) {
+    public Building(Texture theTexture, FitViewport viewport, TiledMap tiledMap) {
         this.viewport = viewport; // viewport stored by reference
+        this.tiledMap = tiledMap;
         buildingTexture = theTexture;
         construction1 = theTexture; // to be replaced with correct textures
         construction2 = theTexture;
@@ -40,7 +44,7 @@ abstract class Building {
 
     public void draw(SpriteBatch spriteBatch) {
         if (moving) {
-            if (!validLocation()) { // if invalid location for building sprite colour changed
+            if (!validLocation(tiledMap)) { // if invalid location for building sprite colour changed
                 buildingSprite.setColor(1, 0.5f, 0.5f, 1); // red tint
             } else {
                 buildingSprite.setColor(Color.WHITE); // restore colour
@@ -51,7 +55,7 @@ abstract class Building {
 
     public void input() {
         if (moving) {
-            if (Gdx.input.justTouched()) { //makes one event per mouse touch
+            if (Gdx.input.justTouched()) { // makes one event per mouse touch
                 // creates up-to-date rectangle
                 float buildingWidth = buildingSprite.getWidth();
                 float buildingHeight = buildingSprite.getHeight();
@@ -59,10 +63,10 @@ abstract class Building {
 
                 Vector2 touchPos = new Vector2();
                 touchPos.set(Gdx.input.getX(), Gdx.input.getY());
-                viewport.unproject(touchPos); //converts mouse location to in-game units
+                viewport.unproject(touchPos); // converts mouse location to in-game units
 
                 if (buildingRectangle.contains(touchPos.x, touchPos.y)) {
-                    if (validLocation()) { // building is placed
+                    if (validLocation(tiledMap)) { // building is placed
                         moving = false;
                         buildingSprite.setColor(Color.WHITE);
                     }
@@ -74,8 +78,7 @@ abstract class Building {
     public void logic() {
         if (moving) {
             follow();
-        }
-        else {
+        } else {
             if (!(timeElapsed > constructionTime + 1)) {
                 timeElapsed += Gdx.graphics.getDeltaTime();
                 if (Math.floor(timeElapsed) == 0) {
@@ -96,9 +99,9 @@ abstract class Building {
     public void follow() {
         Vector2 touchPos = new Vector2();
         touchPos.set(Gdx.input.getX(), Gdx.input.getY());
-        viewport.unproject(touchPos); //converts mouse location to in-game units
+        viewport.unproject(touchPos); // converts mouse location to in-game units
         // moves the sprite to the new location snapping it to the grid of in-game units
-        buildingSprite.setCenter((float) Math.floor(touchPos.x)+0.5f, (float) Math.floor(touchPos.y)+0.5f);
+        buildingSprite.setCenter((float) Math.floor(touchPos.x) + 0.5f, (float) Math.floor(touchPos.y) + 0.5f);
 
         float worldWidth = viewport.getWorldWidth();
         float worldHeight = viewport.getWorldHeight();
@@ -110,8 +113,20 @@ abstract class Building {
         buildingSprite.setY(MathUtils.clamp(buildingSprite.getY(), 0, worldHeight - buildingHeight));
     }
 
-    public boolean validLocation() {
-        //needs logic to determine if location is valid place for building
-        return true;
+    /**
+     * Must be provided with a {@Class TiledMap}
+     *
+     * @return
+     */
+    public boolean validLocation(TiledMap map) {
+        final int validTileId = 50; // hard coded, bad
+        final int invalidTileId = 51; // hard coded, bad
+        final int occupiedTileId = 52; // hard coded, bad
+
+        TiledMapTileLayer validityMap = (TiledMapTileLayer) tiledMap.getLayers().get("validitymap");
+        int currentTileId = validityMap.getCell((int) buildingSprite.getX(), (int) buildingSprite.getY()).getTile()
+                .getId();
+
+        return currentTileId == validTileId;
     }
 }
