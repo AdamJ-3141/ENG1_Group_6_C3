@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
@@ -69,6 +70,7 @@ abstract class Building {
                     if (validLocation(tiledMap)) { // building is placed
                         moving = false;
                         buildingSprite.setColor(Color.WHITE);
+                        markLocation(tiledMap, true);
                     }
                 }
             }
@@ -128,5 +130,25 @@ abstract class Building {
                 .getId();
 
         return currentTileId == validTileId;
+    }
+
+    /**
+     * Must be provided with a {@Class TiledMap}
+     *
+     * @return
+     */
+    public void markLocation(TiledMap map, boolean toBeOccupied) {
+        final int validTileId = 50; // hard coded, bad
+        final int invalidTileId = 51; // hard coded, bad
+        final int occupiedTileId = 52; // hard coded, bad
+
+        TiledMapTileLayer validityMap = (TiledMapTileLayer) tiledMap.getLayers().get("validitymap");
+        TiledMapTile currentTile = validityMap.getCell((int) buildingSprite.getX(), (int) buildingSprite.getY())
+                .getTile();
+        if (toBeOccupied) {
+            currentTile.setId(occupiedTileId);
+        } else {
+            currentTile.setId(validTileId);
+        }
     }
 }
