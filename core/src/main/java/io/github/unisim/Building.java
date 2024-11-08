@@ -8,10 +8,14 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
+import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+
+import java.util.ArrayList;
 
 abstract class Building {
     Sprite buildingSprite;
@@ -36,7 +40,7 @@ abstract class Building {
         construction3 = theTexture;
         construction4 = theTexture;
         buildingSprite = new Sprite(buildingTexture);
-        buildingSprite.setSize(1, 1);
+        buildingSprite.setSize(2, 2);
         buildingRectangle = new Rectangle();
         moving = true; // starts the building as being able to move
         timeElapsed = 0;
@@ -103,7 +107,7 @@ abstract class Building {
         touchPos.set(Gdx.input.getX(), Gdx.input.getY());
         viewport.unproject(touchPos); // converts mouse location to in-game units
         // moves the sprite to the new location snapping it to the grid of in-game units
-        buildingSprite.setCenter((float) Math.floor(touchPos.x) + 0.5f, (float) Math.floor(touchPos.y) + 0.5f);
+        buildingSprite.setCenter((float) Math.floor(touchPos.x)+1, (float) Math.floor(touchPos.y)+1);
 
         float worldWidth = viewport.getWorldWidth();
         float worldHeight = viewport.getWorldHeight();
@@ -126,10 +130,16 @@ abstract class Building {
         final int occupiedTileId = 52; // hard coded, bad
 
         TiledMapTileLayer validityMap = (TiledMapTileLayer) tiledMap.getLayers().get("validitymap");
-        int currentTileId = validityMap.getCell((int) buildingSprite.getX(), (int) buildingSprite.getY()).getTile()
-                .getId();
-
-        return currentTileId == validTileId;
+        for (int x = 0; x < 2; x++) {
+            for (int y = 0; y < 2; y++) {
+                int currentTileId = validityMap.getCell((int) buildingSprite.getX()+x, (int) buildingSprite.getY()+y).getTile()
+                    .getId();
+                if(currentTileId != validTileId){
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     /**
@@ -143,12 +153,16 @@ abstract class Building {
         final int occupiedTileId = 52; // hard coded, bad
 
         TiledMapTileLayer validityMap = (TiledMapTileLayer) tiledMap.getLayers().get("validitymap");
-        TiledMapTile currentTile = validityMap.getCell((int) buildingSprite.getX(), (int) buildingSprite.getY())
-                .getTile();
-        if (toBeOccupied) {
-            currentTile.setId(occupiedTileId);
-        } else {
-            currentTile.setId(validTileId);
+        TiledMapTileSet tileSet = map.getTileSets().getTileSet("validitytiles");
+        for (int x = 0; x < 2; x++) {
+            for (int y = 0; y < 2; y++) {
+                TiledMapTileLayer.Cell currentCell = validityMap.getCell((int) buildingSprite.getX() + x, (int) buildingSprite.getY() + y);
+                if (toBeOccupied) {
+                    currentCell.setTile(tileSet.getTile(occupiedTileId));
+                } else {
+                    currentCell.setTile(tileSet.getTile(validTileId));
+                }
+            }
         }
     }
 }
