@@ -2,18 +2,12 @@ package io.github.unisim;
 
 import java.util.ArrayList;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.*;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
@@ -23,14 +17,12 @@ public class GameScreen implements Screen {
     private String mapPath;
     private TiledMap tiledMap;
     private TiledMapRenderer tiledMapRenderer;
+    public GUI guiHandler;
     public OrthographicCamera camera;
     public SpriteBatch spriteBatch;
     public FitViewport viewport;
 
     public FitViewport guiViewport;
-    public Stage stage;
-    public Table table;
-    public Skin skin;
 
     ArrayList<Building> buildings;
 
@@ -52,23 +44,10 @@ public class GameScreen implements Screen {
         camera = new OrthographicCamera();
         camera.setToOrtho(false, WORLD_WIDTH, WORLD_HEIGHT);
         camera.update();
-        viewport = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
+        viewport = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT+10, camera);
 
-        guiViewport = new FitViewport(10*WORLD_WIDTH, 10*WORLD_HEIGHT);
-
-        stage = new Stage(guiViewport);
-        table = new Table();
-        table.setFillParent(true);
-        stage.addActor(table);
-        table.setDebug(true); // turn on all debug lines (table, cell, and widget)
-        table.top();
-        skin = new Skin(Gdx.files.internal("uiskin.json"));
-
-        Label testLabel = new Label("Hello World", skin);
-        table.add(testLabel);
-        table.row();
-        Label testLabel2 = new Label("Goodbye World", skin);
-        table.add(testLabel2);
+        guiViewport = new FitViewport(20*WORLD_WIDTH, 20*(WORLD_HEIGHT+10));
+        guiHandler = new GUI(guiViewport);
 
         buildings = new ArrayList<>();
 
@@ -102,7 +81,7 @@ public class GameScreen implements Screen {
     private void draw() {
         ScreenUtils.clear(Color.BLACK);
         camera.update();
-        tiledMapRenderer.setView(camera);
+        tiledMapRenderer.setView(camera.combined, 0, 0, WORLD_WIDTH, WORLD_HEIGHT);
         tiledMapRenderer.render();
 
         viewport.apply();
@@ -115,8 +94,7 @@ public class GameScreen implements Screen {
     }
 
     private void drawGui() {
-        guiViewport.apply();
-        stage.draw();
+        guiHandler.drawGUI();
     }
 
     @Override
