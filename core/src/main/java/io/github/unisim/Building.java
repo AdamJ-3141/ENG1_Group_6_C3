@@ -35,10 +35,10 @@ abstract class Building {
         this.viewport = viewport; // viewport stored by reference
         this.tiledMap = tiledMap;
         buildingTexture = theTexture;
-        construction1 = theTexture; // to be replaced with correct textures
-        construction2 = theTexture;
-        construction3 = theTexture;
-        construction4 = theTexture;
+        construction1 = new Texture("construction1.png");
+        construction2 = new Texture("construction2.png");
+        construction3 = new Texture("construction3.png");
+        construction4 = new Texture("construction4.png");
         buildingSprite = new Sprite(buildingTexture);
         buildingSprite.setSize(2, 2);
         buildingRectangle = new Rectangle();
@@ -97,6 +97,7 @@ abstract class Building {
                     buildingSprite.setTexture(construction4); // 3/4
                 } else {
                     buildingSprite.setTexture(buildingTexture); // restore to normal texture once built
+                    buildingSprite.setSize(2, 2);
                 }
             }
         }
