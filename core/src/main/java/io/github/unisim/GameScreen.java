@@ -47,14 +47,22 @@ public class GameScreen implements Screen {
         camera = new OrthographicCamera();
         camera.setToOrtho(false, WORLD_WIDTH, WORLD_HEIGHT);
         camera.update();
-        viewport = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT+10, camera);
+        viewport = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT+12, camera);
 
-        guiViewport = new FitViewport(20*WORLD_WIDTH, 20*(WORLD_HEIGHT+10));
+        guiViewport = new FitViewport(20*WORLD_WIDTH, 20*(WORLD_HEIGHT+12));
         guiHandler = new GUI(guiViewport, this);
 
         buildings = new ArrayList<>();
 
-        buildings.add(new Library(viewport, tiledMap)); // for testing purposes
+        // buildings.add(new Library(viewport, tiledMap)); // for testing purposes
+    }
+
+    public void addBuilding(Building building) {
+        buildings.add(building);
+    }
+
+    public TiledMap getTiledMap() {
+        return tiledMap;
     }
 
     @Override

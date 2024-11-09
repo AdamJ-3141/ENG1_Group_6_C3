@@ -2,12 +2,12 @@ package io.github.unisim;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 public class GUI {
@@ -67,8 +67,63 @@ public class GUI {
         table.add(pauseButton).width(200).height(30).colspan(2);
         table.row();
 
+        Table buildingButtonTable = new Table();
 
+        ImageButton accommodationButton = getBuildingButton(
+                "Accommodation_Button_Up.png",
+                "Accommodation_Button_Down.png",
+                "Accommodation"
+                );
+        buildingButtonTable.add(accommodationButton).width(75).height(75).uniform().pad(5);
+        ImageButton foodButton = getBuildingButton(
+                "Food_Button_Up.png",
+                "Food_Button_Down.png",
+                "Food"
+        );
+        buildingButtonTable.add(foodButton).width(75).height(75).uniform().pad(5);
+        ImageButton lectureButton = getBuildingButton(
+                "Lecture_Button_Up.png",
+                "Lecture_Button_Down.png",
+                "Lecture"
+        );
+        buildingButtonTable.add(lectureButton).width(75).height(75).uniform().pad(5);
+        ImageButton libraryButton = getBuildingButton(
+                "Library_Button_Up.png",
+                "Library_Button_Down.png",
+                "Library"
+        );
+        buildingButtonTable.add(libraryButton).width(75).height(75).uniform().pad(5);
+        table.add(buildingButtonTable).colspan(4);
+    }
 
+    private ImageButton getBuildingButton(String upTexture, String downTexture, String buildingType) {
+        Texture UButtonTexture = new Texture(Gdx.files.internal(upTexture));
+        Texture DButtonTexture = new Texture(Gdx.files.internal(downTexture));
+        ImageButton buildingButton = new ImageButton(
+                new TextureRegionDrawable(new TextureRegion(UButtonTexture)),
+                new TextureRegionDrawable(new TextureRegion(DButtonTexture)));
+        buildingButton.addListener(new ChangeListener(){
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                switch (buildingType) {
+                    case "Accommodation":
+                        screen.addBuilding(new Accommodation(screen.viewport, screen.getTiledMap()));
+                        break;
+                    case "Library":
+                        screen.addBuilding(new Library(screen.viewport, screen.getTiledMap()));
+                        break;
+                    case "Food":
+                        screen.addBuilding(new Food(screen.viewport, screen.getTiledMap()));
+                        break;
+                    case "Lecture":
+                        screen.addBuilding(new Lecture(screen.viewport, screen.getTiledMap()));
+                        break;
+                    default:
+                        System.out.println("Unknown building type: " + buildingType);
+                }
+            }
+        });
+        return buildingButton;
     }
 
     public void drawGUI() {
