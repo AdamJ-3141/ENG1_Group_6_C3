@@ -70,6 +70,16 @@ public class GameScreen implements Screen {
         return tiledMap;
     }
 
+    public void removeMovingBuilding(){
+        for (Building building : buildings) {
+            if (building.isMoving()) {
+                buildings.remove(building);
+                placingBuilding = false;
+                break;
+            }
+        }
+    }
+
     @Override
     public void show() {
     }

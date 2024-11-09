@@ -121,6 +121,8 @@ public class GUI {
                         default:
                             System.out.println("Unknown building type: " + buildingType);
                     }
+                } else {
+                    screen.removeMovingBuilding();
                 }
             }
         });
