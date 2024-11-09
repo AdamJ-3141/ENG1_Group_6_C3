@@ -143,8 +143,8 @@ abstract class Building {
         // moves the sprite to the new location snapping it to the grid of in-game units
         buildingSprite.setCenter((float) Math.floor(touchPos.x)+1, (float) Math.floor(touchPos.y)+1);
 
-        float worldWidth = viewport.getWorldWidth();
-        float worldHeight = viewport.getWorldHeight();
+        float worldWidth = tiledMap.getProperties().get("width", Integer.class);
+        float worldHeight = tiledMap.getProperties().get("height", Integer.class);
         float buildingWidth = buildingSprite.getWidth();
         float buildingHeight = buildingSprite.getHeight();
 
