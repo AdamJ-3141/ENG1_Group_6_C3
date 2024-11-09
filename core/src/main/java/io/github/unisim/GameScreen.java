@@ -6,7 +6,6 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.*;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -18,10 +17,16 @@ public class GameScreen implements Screen {
     private String mapPath;
     private TiledMap tiledMap;
     private TiledMapRenderer tiledMapRenderer;
+    public GUI guiHandler;
     public OrthographicCamera camera;
-    // may want to move this out of this screen and into game in future
     public SpriteBatch spriteBatch;
-    FitViewport viewport;
+    public FitViewport viewport;
+
+    public FitViewport guiViewport;
+
+    public Boolean gameRunning = false;
+    public Boolean initialPause = true;
+
     ArrayList<Building> buildings;
 
     final float WORLD_WIDTH;
@@ -29,7 +34,6 @@ public class GameScreen implements Screen {
 
     public GameScreen(final App game) {
         this.game = game;
-
         spriteBatch = new SpriteBatch();
 
         mapPath = "defaultMap.tmx";
@@ -43,7 +47,10 @@ public class GameScreen implements Screen {
         camera = new OrthographicCamera();
         camera.setToOrtho(false, WORLD_WIDTH, WORLD_HEIGHT);
         camera.update();
-        viewport = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
+        viewport = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT+10, camera);
+
+        guiViewport = new FitViewport(20*WORLD_WIDTH, 20*(WORLD_HEIGHT+10));
+        guiHandler = new GUI(guiViewport, this);
 
         buildings = new ArrayList<>();
 
@@ -59,6 +66,7 @@ public class GameScreen implements Screen {
         input();
         logic();
         draw();
+        drawGui();
     }
 
     private void input() {
@@ -76,7 +84,7 @@ public class GameScreen implements Screen {
     private void draw() {
         ScreenUtils.clear(Color.BLACK);
         camera.update();
-        tiledMapRenderer.setView(camera);
+        tiledMapRenderer.setView(camera.combined, 0, 0, WORLD_WIDTH, WORLD_HEIGHT);
         tiledMapRenderer.render();
 
         viewport.apply();
@@ -88,10 +96,15 @@ public class GameScreen implements Screen {
         spriteBatch.end();
     }
 
+    private void drawGui() {
+        guiHandler.drawGUI();
+    }
+
     @Override
     public void resize(int width, int height) {
         camera.update();
         viewport.update(width, height, true);
+        guiViewport.update(width, height, true);
     }
 
     @Override
