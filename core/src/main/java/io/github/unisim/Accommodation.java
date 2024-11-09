@@ -1,6 +1,5 @@
 package io.github.unisim;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.utils.viewport.FitViewport;

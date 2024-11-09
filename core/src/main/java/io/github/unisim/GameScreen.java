@@ -35,6 +35,12 @@ public class GameScreen implements Screen {
     final float WORLD_WIDTH;
     final float WORLD_HEIGHT;
 
+    /**
+     * this method initialises the attributes required for the gameScreen.
+     * set the viewport and camera for this screen
+     * creates the tileMap
+     * @param game
+     */
     public GameScreen(final App game) {
         this.game = game;
         spriteBatch = new SpriteBatch();
@@ -55,13 +61,16 @@ public class GameScreen implements Screen {
         guiViewport = new FitViewport(20 * WORLD_WIDTH, 20 * (WORLD_HEIGHT + 12));
         guiHandler = new GUI(guiViewport, this);
 
-        gameTimer = 300f; // 5 mins
+        gameTimer = 300f; // run time for the game, current 5 mins
 
         buildings = new ArrayList<>();
-
-        // buildings.add(new Library(viewport, tiledMap)); // for testing purposes
     }
 
+    /**
+     * adds the building passed to the list of buildings currently on the map
+     *
+     * @param building - The building object to be added to the map
+     */
     public void addBuilding(Building building) {
         buildings.add(building);
     }
@@ -70,6 +79,9 @@ public class GameScreen implements Screen {
         return tiledMap;
     }
 
+    /**
+     * deletes any buildings that are currently moving
+     */
     public void removeMovingBuilding(){
         for (Building building : buildings) {
             if (building.isMoving()) {
@@ -84,6 +96,10 @@ public class GameScreen implements Screen {
     public void show() {
     }
 
+    /**
+     * this method controls how the game runs every frame
+     * @param delta The time in seconds since the last render.
+     */
     @Override
     public void render(float delta) {
         input();
@@ -92,12 +108,19 @@ public class GameScreen implements Screen {
         drawGui();
     }
 
+    /**
+     * this method ensures that any inputs since the last frame are handled
+     */
     private void input() {
         for (Building building : buildings) {
             building.input();
         }
     }
 
+    /**
+     * in this method the gameTimer is updated to and the current amount of buildings on the map
+     * as well as calling the building object's logic method
+     */
     private void logic() {
         if (gameRunning) {
             gameTimer -= Gdx.graphics.getDeltaTime();
@@ -115,6 +138,10 @@ public class GameScreen implements Screen {
         guiHandler.setBuildingCount(buildingAmount);
     }
 
+    /**
+     * this method will draw the playable map to the screen. rendering both the tileMap and the buildings that are on
+     * the screen
+     */
     private void draw() {
         ScreenUtils.clear(Color.BLACK);
         camera.update();
@@ -130,10 +157,19 @@ public class GameScreen implements Screen {
         spriteBatch.end();
     }
 
+    /**
+     * draws the GUI for this screen
+     */
     private void drawGui() {
         guiHandler.drawGUI();
     }
 
+    /**
+     * this method updates the camera and viewports when the window is resized to make sure everything scales correctly
+     *
+     * @param width - width of current window
+     * @param height - height of current window
+     */
     @Override
     public void resize(int width, int height) {
         camera.update();
