@@ -118,7 +118,9 @@ public abstract class Building {
             follow();
         } else {
             if (!(timeElapsed > constructionTime + 1)) { // checks that the building is still under construction
-                timeElapsed += Gdx.graphics.getDeltaTime(); // tracks the time in seconds
+                if (gameScreen.gameRunning) {
+                    timeElapsed += Gdx.graphics.getDeltaTime(); // tracks the time in seconds
+                }
                 if (Math.floor(timeElapsed) == 0) {
                     buildingSprite.setTexture(construction1); // start of construction
                 } else if (Math.floor(timeElapsed) == constructionTime * 0.25) {
