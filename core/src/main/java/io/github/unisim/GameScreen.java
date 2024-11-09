@@ -99,7 +99,9 @@ public class GameScreen implements Screen {
     }
 
     private void logic() {
-        gameTimer -= Gdx.graphics.getDeltaTime();
+        if (gameRunning) {
+            gameTimer -= Gdx.graphics.getDeltaTime();
+        }
         for (Building building : buildings) {
             building.logic();
         }

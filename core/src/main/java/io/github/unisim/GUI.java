@@ -149,7 +149,12 @@ public class GUI {
     }
 
     public void updateTimeRemaining(int timeRemaining) {
-        this.timeRemaining.setText(String.valueOf(timeRemaining));
+        String minutes = String.valueOf(timeRemaining / 60);
+        String seconds = String.valueOf(timeRemaining % 60);
+        if (seconds.length() == 1) {
+            seconds = "0" + seconds;
+        }
+        this.timeRemaining.setText(minutes +":"+ seconds);
     }
 
     public void setSatisfaction(int satisfaction) {
