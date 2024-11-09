@@ -2,6 +2,7 @@ package io.github.unisim;
 
 import java.util.ArrayList;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -27,6 +28,7 @@ public class GameScreen implements Screen {
     public Boolean gameRunning = false;
     public Boolean initialPause = true;
     public Boolean placingBuilding = false;
+    public float gameTimer;
 
     ArrayList<Building> buildings;
 
@@ -48,10 +50,12 @@ public class GameScreen implements Screen {
         camera = new OrthographicCamera();
         camera.setToOrtho(false, WORLD_WIDTH, WORLD_HEIGHT);
         camera.update();
-        viewport = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT+12, camera);
+        viewport = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT + 12, camera);
 
-        guiViewport = new FitViewport(20*WORLD_WIDTH, 20*(WORLD_HEIGHT+12));
+        guiViewport = new FitViewport(20 * WORLD_WIDTH, 20 * (WORLD_HEIGHT + 12));
         guiHandler = new GUI(guiViewport, this);
+
+        gameTimer = 300f; // 5 mins
 
         buildings = new ArrayList<>();
 
@@ -85,9 +89,12 @@ public class GameScreen implements Screen {
     }
 
     private void logic() {
+        gameTimer -= Gdx.graphics.getDeltaTime();
         for (Building building : buildings) {
             building.logic();
         }
+        guiHandler.updateTimeRemaining((int) gameTimer);
+        guiHandler.setBuildingCount(buildings.size());
     }
 
     private void draw() {
