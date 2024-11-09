@@ -13,15 +13,15 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
-import java.util.ArrayList;
 
-abstract class Building {
+public abstract class Building {
     Sprite buildingSprite;
     boolean moving;
     Rectangle buildingRectangle;
     FitViewport viewport;
     TiledMap tiledMap;
     Texture buildingTexture;
+    GameScreen gameScreen;
     Texture construction1;
     Texture construction2;
     Texture construction3;
@@ -29,15 +29,17 @@ abstract class Building {
     float timeElapsed;
     final float constructionTime;
 
+
     /**
      * the constructor of this class initialises all the attributes
      *
      * @param viewport - the viewport for the game, sets the scale for the building's methods
      * @param tiledMap - the tileMap of the game allows for checks to be made on the types of tiles
      */
-    public Building(FitViewport viewport, TiledMap tiledMap) {
+    public Building(FitViewport viewport, TiledMap tiledMap, GameScreen gameScreen) {
         this.viewport = viewport; // viewport stored by reference
         this.tiledMap = tiledMap; // tileMap stored by reference
+        this.gameScreen = gameScreen;
         setTexture();
         construction1 = new Texture("construction1.png");
         construction2 = new Texture("construction2.png");
@@ -98,6 +100,7 @@ abstract class Building {
                         moving = false;
                         buildingSprite.setColor(Color.WHITE);
                         markLocation(tiledMap, true);
+                        gameScreen.placingBuilding = false;
                     }
                 }
             }
@@ -196,7 +199,9 @@ abstract class Building {
         TiledMapTileSet tileSet = map.getTileSets().getTileSet("validitytiles");
         for (int x = 0; x < 2; x++) {
             for (int y = 0; y < 2; y++) {
-                TiledMapTileLayer.Cell currentCell = validityMap.getCell((int) buildingSprite.getX() + x, (int) buildingSprite.getY() + y);
+                TiledMapTileLayer.Cell currentCell = validityMap.getCell(
+                    (int) buildingSprite.getX() + x,
+                    (int) buildingSprite.getY() + y);
                 if (toBeOccupied) {
                     currentCell.setTile(tileSet.getTile(occupiedTileId));
                 } else {
