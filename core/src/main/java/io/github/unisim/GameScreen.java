@@ -14,9 +14,9 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 public class GameScreen implements Screen {
     final App game;
 
-    private String mapPath;
-    private TiledMap tiledMap;
-    private TiledMapRenderer tiledMapRenderer;
+    private final TiledMap tiledMap;
+    private final TiledMapRenderer tiledMapRenderer;
+
     public GUI guiHandler;
     public OrthographicCamera camera;
     public SpriteBatch spriteBatch;
@@ -26,6 +26,7 @@ public class GameScreen implements Screen {
 
     public Boolean gameRunning = false;
     public Boolean initialPause = true;
+    public Boolean placingBuilding = false;
 
     ArrayList<Building> buildings;
 
@@ -36,7 +37,7 @@ public class GameScreen implements Screen {
         this.game = game;
         spriteBatch = new SpriteBatch();
 
-        mapPath = "defaultMap.tmx";
+        String mapPath = "defaultMap.tmx";
         tiledMap = new TmxMapLoader().load(mapPath);
 
         float unitScale = 1 / 32f;

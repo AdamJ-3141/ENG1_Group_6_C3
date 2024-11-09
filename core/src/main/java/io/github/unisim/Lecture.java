@@ -11,8 +11,8 @@ public class Lecture extends Building {
      * @param viewport - the viewport for the game, sets the scale for the building's methods
      * @param tiledMap - the tileMap of the game allows for checks to be made on the types of tiles
      */
-    public Lecture(FitViewport viewport, TiledMap tiledMap) {
-        super(viewport, tiledMap);
+    public Lecture(FitViewport viewport, TiledMap tiledMap, GameScreen gameScreen) {
+        super(viewport, tiledMap, gameScreen);
     }
 
     /**

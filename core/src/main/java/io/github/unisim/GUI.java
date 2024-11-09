@@ -14,27 +14,25 @@ public class GUI {
 
     private final FitViewport viewport;
     private final GameScreen screen;
-    private Stage stage;
-    private Table table;
-    private Skin skin;
+    private final Stage stage;
 
-    private Label buildingCount;
-    private Label timeRemaining;
-    private Label satisfaction;
+    private final Label buildingCount;
+    private final Label timeRemaining;
+    private final Label satisfaction;
 
-    private TextButton pauseButton;
+    private final TextButton pauseButton;
 
     public GUI(FitViewport viewport, GameScreen screen) {
         this.viewport = viewport;
         this.screen = screen;
         stage = new Stage(viewport);
         Gdx.input.setInputProcessor(stage);
-        table = new Table();
+        Table table = new Table();
         table.setFillParent(true);
         stage.addActor(table);
         //table.setDebug(true); // turn on all debug lines (table, cell, and widget)
         table.top();
-        skin = new Skin(Gdx.files.internal("uiskin.json"));
+        Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
 
         Image titleImage = new Image(new Texture(Gdx.files.internal("Title.png")));
         table.add(titleImage).width(407).height(83).padTop(10).padBottom(10).colspan(4);
@@ -105,21 +103,24 @@ public class GUI {
         buildingButton.addListener(new ChangeListener(){
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                switch (buildingType) {
-                    case "Accommodation":
-                        screen.addBuilding(new Accommodation(screen.viewport, screen.getTiledMap()));
-                        break;
-                    case "Library":
-                        screen.addBuilding(new Library(screen.viewport, screen.getTiledMap()));
-                        break;
-                    case "Food":
-                        screen.addBuilding(new Food(screen.viewport, screen.getTiledMap()));
-                        break;
-                    case "Lecture":
-                        screen.addBuilding(new Lecture(screen.viewport, screen.getTiledMap()));
-                        break;
-                    default:
-                        System.out.println("Unknown building type: " + buildingType);
+                if (!screen.placingBuilding) {
+                    screen.placingBuilding = true;
+                    switch (buildingType) {
+                        case "Accommodation":
+                            screen.addBuilding(new Accommodation(screen.viewport, screen.getTiledMap(), screen));
+                            break;
+                        case "Library":
+                            screen.addBuilding(new Library(screen.viewport, screen.getTiledMap(), screen));
+                            break;
+                        case "Food":
+                            screen.addBuilding(new Food(screen.viewport, screen.getTiledMap(), screen));
+                            break;
+                        case "Lecture":
+                            screen.addBuilding(new Lecture(screen.viewport, screen.getTiledMap(), screen));
+                            break;
+                        default:
+                            System.out.println("Unknown building type: " + buildingType);
+                    }
                 }
             }
         });
