@@ -4,8 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -22,6 +20,11 @@ public class MenuScreen implements Screen {
     private Table table;
     private Skin skin;
 
+    /**
+     * initialises the attributes as required. sets the GUI's formatting
+     *
+     * @param game
+     */
     public MenuScreen(App game) {
         this.game = game;
         viewport = new FitViewport(420, 200);
@@ -46,6 +49,10 @@ public class MenuScreen implements Screen {
 
     }
 
+    /**
+     * draws the screen every frame, and starts the game if the window is clicked
+     * @param delta The time in seconds since the last render.
+     */
     @Override
     public void render(float delta) {
         ScreenUtils.clear(Color.BLACK);
@@ -56,6 +63,12 @@ public class MenuScreen implements Screen {
         }
     }
 
+    /**
+     * this method updates the camera and viewports when the window is resized to make sure everything scales correctly
+     *
+     * @param width - width of current window
+     * @param height - height of current window
+     */
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height, true);

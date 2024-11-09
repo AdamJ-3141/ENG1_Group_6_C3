@@ -22,6 +22,12 @@ public class GUI {
 
     private final TextButton pauseButton;
 
+    /**
+     * initialises the attributes and sets the layout for the GUI
+     *
+     * @param viewport - the viewport for the GUI to use
+     * @param screen - current screen for the game
+     */
     public GUI(FitViewport viewport, GameScreen screen) {
         this.viewport = viewport;
         this.screen = screen;
@@ -51,7 +57,7 @@ public class GUI {
         timeRemaining = new Label("05:00", skin);
         table.add(timeRemaining).left();
 
-
+        //  creates the pause button and makes it pause the game when clicked
         pauseButton = new TextButton("Pause", skin);
         pauseButton.addListener(new ChangeListener(){
             @Override
@@ -65,6 +71,7 @@ public class GUI {
         table.add(pauseButton).width(200).height(30).colspan(2);
         table.row();
 
+        // creates the building buttons
         Table buildingButtonTable = new Table();
 
         ImageButton accommodationButton = getBuildingButton(
@@ -94,6 +101,17 @@ public class GUI {
         table.add(buildingButtonTable).colspan(4);
     }
 
+    /**
+     * this method will create the button for each type of building using the parameters to differ there functionality
+     * each of the buttons created will have an up and down texture.
+     * each of the buttons will have an associated functionality that will spawn the appropriate type of building unless
+     * there is a building already being moved in existence. Then the method will delete that instead building.
+     *
+     * @param upTexture - texture to use for when the button is in the up state
+     * @param downTexture - texture to use for when the button is in the down state
+     * @param buildingType - the type of building the button is representing
+     * @return ImageButton object that is the button
+     */
     private ImageButton getBuildingButton(String upTexture, String downTexture, String buildingType) {
         Texture UButtonTexture = new Texture(Gdx.files.internal(upTexture));
         Texture DButtonTexture = new Texture(Gdx.files.internal(downTexture));
@@ -121,12 +139,17 @@ public class GUI {
                         default:
                             System.out.println("Unknown building type: " + buildingType);
                     }
+                } else {
+                    screen.removeMovingBuilding();
                 }
             }
         });
         return buildingButton;
     }
 
+    /**
+     * draws the GUI onto the screen, changing the pause button's text depending on the status of the game
+     */
     public void drawGUI() {
         viewport.apply();
         if (screen.gameRunning) {
@@ -142,14 +165,35 @@ public class GUI {
         stage.act();
     }
 
+    /**
+     * this method sets the number to be displayed on the GUI statistic for number of buildings
+     *
+     * @param buildingCount - current number of buildings placed
+     */
     public void setBuildingCount(int buildingCount) {
         this.buildingCount.setText(String.valueOf(buildingCount));
     }
 
+    /**
+     * this method will convert the time remaining in seconds for the game and convert it to m:ss format and set this
+     * as the value to be displayed in time remaining
+     *
+     * @param timeRemaining - time remaining in the game in seconds
+     */
     public void updateTimeRemaining(int timeRemaining) {
-        this.timeRemaining.setText(String.valueOf(timeRemaining));
+        String minutes = String.valueOf(timeRemaining / 60);
+        String seconds = String.valueOf(timeRemaining % 60);
+        if (seconds.length() == 1) {
+            seconds = "0" + seconds;
+        }
+        this.timeRemaining.setText(minutes +":"+ seconds);
     }
 
+    /**
+     * this method sets the number to be displayed on the GUI statistic for satisfaction
+     *
+     * @param satisfaction - satisfaction
+     */
     public void setSatisfaction(int satisfaction) {
         this.satisfaction.setText(String.valueOf(satisfaction));
     }
