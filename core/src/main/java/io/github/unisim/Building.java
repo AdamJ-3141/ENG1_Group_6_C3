@@ -210,4 +210,12 @@ public abstract class Building {
             }
         }
     }
+
+    /**
+     *
+     * @return boolean - Is the building current moving
+     */
+    public boolean isMoving() {
+        return moving;
+    }
 }

@@ -94,7 +94,13 @@ public class GameScreen implements Screen {
             building.logic();
         }
         guiHandler.updateTimeRemaining((int) gameTimer);
-        guiHandler.setBuildingCount(buildings.size());
+        int buildingAmount = 0;
+        for (Building building : buildings) {
+            if (!building.isMoving()) {
+                buildingAmount += 1;
+            }
+        }
+        guiHandler.setBuildingCount(buildingAmount);
     }
 
     private void draw() {
