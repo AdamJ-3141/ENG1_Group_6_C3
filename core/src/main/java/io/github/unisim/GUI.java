@@ -2,16 +2,18 @@ package io.github.unisim;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 public class GUI {
 
     private final FitViewport viewport;
+    private final GameScreen screen;
     private Stage stage;
     private Table table;
     private Skin skin;
@@ -20,13 +22,17 @@ public class GUI {
     private Label timeRemaining;
     private Label satisfaction;
 
-    public GUI(FitViewport viewport) {
+    private TextButton pauseButton;
+
+    public GUI(FitViewport viewport, GameScreen screen) {
         this.viewport = viewport;
+        this.screen = screen;
         stage = new Stage(viewport);
+        Gdx.input.setInputProcessor(stage);
         table = new Table();
         table.setFillParent(true);
         stage.addActor(table);
-        table.setDebug(true); // turn on all debug lines (table, cell, and widget)
+        //table.setDebug(true); // turn on all debug lines (table, cell, and widget)
         table.top();
         skin = new Skin(Gdx.files.internal("uiskin.json"));
 
@@ -46,11 +52,38 @@ public class GUI {
         table.add(timeRemainingLabel).right();
         timeRemaining = new Label("05:00", skin);
         table.add(timeRemaining).left();
+
+
+        pauseButton = new TextButton("Pause", skin);
+        pauseButton.addListener(new ChangeListener(){
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                if (screen.initialPause) {
+                    screen.initialPause = false;
+                }
+                screen.gameRunning = !screen.gameRunning;
+            }
+        });
+        table.add(pauseButton).width(200).height(30).colspan(2);
+        table.row();
+
+
+
     }
 
     public void drawGUI() {
         viewport.apply();
+        if (screen.gameRunning) {
+            pauseButton.setText("Pause");
+        } else {
+            if (screen.initialPause) {
+                pauseButton.setText("Start");
+            } else {
+                pauseButton.setText("Resume");
+            }
+        }
         stage.draw();
+        stage.act();
     }
 
     public void setBuildingCount(int buildingCount) {

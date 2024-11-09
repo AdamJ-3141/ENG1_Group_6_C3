@@ -24,6 +24,9 @@ public class GameScreen implements Screen {
 
     public FitViewport guiViewport;
 
+    public Boolean gameRunning = false;
+    public Boolean initialPause = true;
+
     ArrayList<Building> buildings;
 
     final float WORLD_WIDTH;
@@ -47,7 +50,7 @@ public class GameScreen implements Screen {
         viewport = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT+10, camera);
 
         guiViewport = new FitViewport(20*WORLD_WIDTH, 20*(WORLD_HEIGHT+10));
-        guiHandler = new GUI(guiViewport);
+        guiHandler = new GUI(guiViewport, this);
 
         buildings = new ArrayList<>();
 
